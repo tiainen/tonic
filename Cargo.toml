@@ -26,3 +26,7 @@ members = [
   "tests/use_arc_self",
 ]
 resolver = "2"
+
+[patch.crates-io]
+rustls = { git = 'https://github.com/tiainen/rustls', branch = 'ech-15-servername-clone' }
+tokio-rustls = { git = 'https://github.com/tiainen/tls', branch = 'ech-15' }

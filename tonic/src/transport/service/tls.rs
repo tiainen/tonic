@@ -32,7 +32,7 @@ impl TlsConnector {
     pub(crate) fn new(
         ca_cert: Option<Certificate>,
         identity: Option<Identity>,
-        domain: String,
+        server_name: ServerName,
     ) -> Result<Self, crate::Error> {
         let builder = ClientConfig::builder().with_safe_defaults();
         let mut roots = RootCertStore::empty();
@@ -76,7 +76,7 @@ impl TlsConnector {
         config.alpn_protocols.push(ALPN_H2.as_bytes().to_vec());
         Ok(Self {
             config: Arc::new(config),
-            domain: Arc::new(domain.as_str().try_into()?),
+            domain: Arc::new(server_name),
         })
     }
 
@@ -129,14 +129,14 @@ impl TlsAcceptor {
                 let mut roots = RootCertStore::empty();
                 rustls_keys::add_certs_from_pem(std::io::Cursor::new(&cert.pem[..]), &mut roots)?;
                 builder.with_client_cert_verifier(
-                    AllowAnyAnonymousOrAuthenticatedClient::new(roots).boxed(),
+                    AllowAnyAnonymousOrAuthenticatedClient::new(roots)
                 )
             }
             (Some(cert), false) => {
                 use tokio_rustls::rustls::server::AllowAnyAuthenticatedClient;
                 let mut roots = RootCertStore::empty();
                 rustls_keys::add_certs_from_pem(std::io::Cursor::new(&cert.pem[..]), &mut roots)?;
-                builder.with_client_cert_verifier(AllowAnyAuthenticatedClient::new(roots).boxed())
+                builder.with_client_cert_verifier(AllowAnyAuthenticatedClient::new(roots))
             }
         };
 
