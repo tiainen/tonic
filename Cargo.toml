@@ -28,5 +28,5 @@ members = [
 resolver = "2"
 
 [patch.crates-io]
-rustls = { git = 'https://github.com/tiainen/rustls', branch = 'ech-15-servername-clone' }
+rustls = { git = 'https://github.com/johanvos/rustls', branch = 'ech-15' }
 tokio-rustls = { git = 'https://github.com/tiainen/tls', branch = 'ech-15' }
