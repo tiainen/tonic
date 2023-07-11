@@ -8,7 +8,7 @@ use rustls_native_certs;
 use std::{fmt, sync::Arc};
 use tokio::io::{AsyncRead, AsyncWrite};
 use tokio_rustls::{
-    rustls::{ClientConfig, RootCertStore, ServerConfig, ServerName},
+    rustls::{ClientConfig, KeyLogFile, RootCertStore, ServerConfig, ServerName},
     TlsAcceptor as RustlsAcceptor, TlsConnector as RustlsConnector,
 };
 
@@ -74,6 +74,7 @@ impl TlsConnector {
         };
 
         config.alpn_protocols.push(ALPN_H2.as_bytes().to_vec());
+        config.key_log = Arc::new(KeyLogFile::new());
         Ok(Self {
             config: Arc::new(config),
             domain: Arc::new(server_name),
